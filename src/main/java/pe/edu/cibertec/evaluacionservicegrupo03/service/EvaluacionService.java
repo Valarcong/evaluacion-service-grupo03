@@ -1,8 +1,10 @@
 package pe.edu.cibertec.evaluacionservicegrupo03.service;
 
+import pe.edu.cibertec.evaluacionservicegrupo03.dto.ResumenCrediticioClienteDTO;
 import pe.edu.cibertec.evaluacionservicegrupo03.dto.ScoringRiesgoDTO;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,7 +33,15 @@ public class EvaluacionService {
                 "Cliente nuevo sin historial previo. Evaluacion preliminar.");
     }
 
-    public ScoringRiesgoDTO obtenerInformacionConsolidada(Long clienteId) {
-        return obtenerScoring(clienteId);
+    public ResumenCrediticioClienteDTO obtenerInformacionConsolidada(Long clienteId) {
+        ScoringRiesgoDTO scoring = obtenerScoring(clienteId);
+
+        String estado = "NO_APTO";
+        if (scoring.getNivelRiesgo().equals("BAJO") || scoring.getNivelRiesgo().equals("MEDIO")) {
+            estado = "APTO";
+        }
+
+        return new ResumenCrediticioClienteDTO(clienteId, "Cliente " + clienteId,
+                "7000000" + clienteId, scoring, new ArrayList<>(), estado);
     }
 }
